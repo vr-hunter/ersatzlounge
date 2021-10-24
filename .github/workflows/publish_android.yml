@@ -56,8 +56,16 @@ jobs:
           echo "keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}" >> android/key.properties
           echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" >> android/key.properties
 
+      - name: Generate build number
+        uses: einaregilsson/build-number@v3
+        with:
+          token: ${{secrets.github_token}}
+
+      - name: Print new build number
+        run: echo "Build number is $BUILD_NUMBER"
+
       - name: Build Android App Bundle
-        run: flutter build appbundle --build-name ${{ github.event.release.tag_name }} --build-number ${{ github.run_id }}
+        run: flutter build appbundle --build-name ${{ github.event.release.tag_name }} --build-number $BUILD_NUMBER
 
       - name: Setup Ruby
         uses: actions/setup-ruby@v1
@@ -76,11 +84,12 @@ jobs:
           gem install bundler:2.0.2
           bundle config path vendor/bundle
           bundle install
+
       - name: Release to Google Play (alpha)
         env:
           SUPPLY_PACKAGE_NAME: ${{ secrets.ANDROID_PACKAGE_NAME }}
           SUPPLY_JSON_KEY_DATA: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
         run: |
-          bundle exec fastlane supply \
+          echo bundle exec fastlane supply \
           --aab build/app/outputs/bundle/release/app-release.aab \
           --track alpha

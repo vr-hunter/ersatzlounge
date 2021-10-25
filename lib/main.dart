@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 
-import 'vw_api.dart';
 import 'login.dart';
 
 
@@ -15,7 +14,6 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    VWConnector conn = VWConnector("abs", "bcd");
     return MaterialApp(
       title: 'Ersatzlounge',
       theme: ThemeData(

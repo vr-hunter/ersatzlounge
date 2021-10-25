@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:collection/collection.dart';
 
 import 'package:html/parser.dart' show parse;
 import 'package:html/dom.dart';
@@ -326,15 +325,25 @@ class VWConnector {
     }
     List relationsData = relationsResponseData["relations"];
 
-    if(loungeData.length != relationsData.length){
-      throw APIException("relations and lounge have different number of entries.");
-    }
-
     _cars = [];
 
-    relationsData.forEachIndexed((index, relation) {
-      _cars.add(VWCar(relation, loungeData[index]));
-    });
+    for( var loungeVehicle in loungeData ){
+      String nickname = loungeVehicle["name"];
+
+      // Find record in relations
+      Map? relationsRecord = null;
+      for(var relation in relationsData){
+        if(relation['vehicleNickname'] == nickname){
+          relationsRecord = relation;
+          break;
+        }
+
+      }
+      if(relationsRecord != null){
+       // Found a corresponding relation
+        _cars.add(VWCar(relationsRecord, loungeVehicle));
+      }
+    }
 
     return _cars;
   }

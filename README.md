@@ -1,16 +1,24 @@
-# vw_lounge
+# Ersatzlounge
 
-A replacement for the VW lounge site
+A flutter app to query to show the production status of ordered vehicles registered to a VW ID. 
 
-## Getting Started
+## General
 
-This project is a starting point for a Flutter application.
+When a new vehicle is ordered from VW, one can register the so-called commission number to ones
+VW ID. Until recently, there was a web-portal (the so-called "VW lounge") that showed the current
+production status and an estimated delivery date. However, this portal has been recently deactivated.
 
-A few resources to get you started if this is your first Flutter project:
+Since the underlying API is still operational, there are workarounds to display the data on a PC but
+no working solutions for mobile devices.
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+This app for Android queries the relevant VW APIs and displays the data.
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Building
+
+See automated CI/CD workflows in .github/workflows
+
+## Usage
+
+- Register a VW ID  and add a car by commission number [here](https://www.volkswagen.de/de/besitzer-und-nutzer/myvolkswagen.html) (If not already done)
+- Start the app and use the VW ID username and password to log in
+- Status of all registered vehicles should appear in the overview

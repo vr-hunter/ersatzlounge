@@ -3,8 +3,7 @@ import 'package:collection/collection.dart';
 
 import 'package:html/parser.dart' show parse;
 import 'package:html/dom.dart';
-import 'dart:developer' as dev;
-import 'dart:convert' show json, utf8;
+import 'dart:convert' show json;
 import 'package:uuid/uuid.dart';
 
 import 'package:dio/dio.dart';
@@ -128,6 +127,27 @@ class VWConnector {
     _statusCallback = f;
   }
 
+  get status{
+    return _status;
+  }
+
+  get access_token{
+    getAccessToken();
+    if(_accessToken == null){
+      throw ConnectionException("Couldn't retrieve tokens");
+    } else {
+      return _accessToken!;
+    }
+  }
+
+  get id_token{
+    getAccessToken();
+    if(_idToken == null){
+      throw ConnectionException("Couldn't retrieve tokens");
+    } else {
+      return _idToken!;
+    }
+  }
 
   _setStatus(String status){
     _status = status;
@@ -198,16 +218,25 @@ class VWConnector {
     url = p.getElementById("credentialsForm")?.attributes["action"];
 
     if(csrf == null || relay_state == null  || hmac == null || url == null) {
-      throw ConnectionException("Error parsing login page");
+      if(p.getElementById("emailPasswordForm") != null){
+        throw ConnectionException("User not found. Please use a valid VW ID.");
+      }
+      else {
+        throw ConnectionException("Error parsing login page");
+      }
     }
 
     // Enter password
     params = {"_csrf": csrf, "relayState": relay_state, "hmac": hmac, "email": vwIdEmail, "password": vwIdPassword};
     data = await redirectingPOST("$VW_IDENTITY_HOST$url", data: FormData.fromMap(params));
+    p = parse(data.data);
     if((data.statusCode ?? 999) >= 400) {
       throw ConnectionException("Couldn't get login page 2");
     }
 
+    if(p.getElementById("credentialsForm") != null){
+      throw ConnectionException("Incorrect password. Please use a valid VW ID.");
+    }
 
     loggedIn = true;
     return loggedIn;

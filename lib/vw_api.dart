@@ -29,12 +29,22 @@ class VWCar{
   String? _orderStatus;
   String? _ddType;
   String? _ddValue;
+  bool _hasLoungeData = false;
 
-  Map<dynamic, dynamic> rawDataRelation;
-  Map<dynamic, dynamic> rawDataLounge;
+  Map<dynamic, dynamic> rawDataRelation = {};
+  Map<dynamic, dynamic> rawDataLounge = {};
+
+  VWCar.fromRelation(this.rawDataRelation){
+    try {
+      _nickname = rawDataRelation["vehicleNickname"];
+      _vin = rawDataRelation["vehicle"]["vin"];
+      _commID = rawDataRelation["vehicle"]["commissionId"];
+    }catch(e){
+      throw APIException("Couldn't find fields in API response.");
+    }
+  }
 
   VWCar(this.rawDataRelation, this.rawDataLounge){
-
     try {
       _nickname = rawDataRelation["vehicleNickname"];
       _vin = rawDataRelation["vehicle"]["vin"];
@@ -45,6 +55,7 @@ class VWCar{
     }catch(e){
       throw APIException("Couldn't find fields in API response.");
     }
+    _hasLoungeData = true;
   }
 
   get nickname{
@@ -71,6 +82,9 @@ class VWCar{
     return _ddValue ?? "null";
   }
 
+  get hasLoungeData{
+    return _hasLoungeData;
+  }
 }
 
 class ConnectionException implements Exception{
@@ -327,23 +341,30 @@ class VWConnector {
 
     _cars = [];
 
-    for( var loungeVehicle in loungeData ){
-      String nickname = loungeVehicle["name"];
+    for( var relationsRecord in relationsData ){
+      String nickname = relationsRecord['vehicleNickname'];
 
-      // Find record in relations
-      Map? relationsRecord = null;
-      for(var relation in relationsData){
-        if(relation['vehicleNickname'] == nickname){
-          relationsRecord = relation;
+      // find a lounge record with the same nickname
+      Map? loungeRecord;
+      for(var loungeEntry in loungeData){
+        if(loungeEntry["name"] == nickname){
+          loungeRecord = loungeEntry;
           break;
         }
+      }
 
+      if(loungeRecord == null){
+        // Found no corresponding lounge entry
+        _cars.add(VWCar.fromRelation(relationsRecord));
       }
-      if(relationsRecord != null){
-       // Found a corresponding relation
-        _cars.add(VWCar(relationsRecord, loungeVehicle));
+      else {
+        _cars.add(VWCar(relationsRecord, loungeRecord));
       }
+
+
+
     }
+
 
     return _cars;
   }

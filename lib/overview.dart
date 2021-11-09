@@ -80,16 +80,29 @@ class _OverviewPageState extends State<OverviewPage> {
     }
     else if(status == Status.done){
       List<Widget> widgets = [];
+
+      bool first = true;
+
       for (VWCar car in cars ?? []) {
+        if(!first){
+          widgets.add(Divider());
+        }
+        first = false;
         widgets.add(Text(
           car.nickname,
           style: Theme.of(context).textTheme.headline4,
         ));
         widgets.add(Text("Commissioning ID: ${car.commID}"));
         widgets.add(Text("VIN: ${car.vin}"));
-        widgets.add(Text("Order status: ${car.orderStatus}"));
-        widgets.add(Text("Delivery date type: ${car.deliveryDateType}"));
-        widgets.add(Text("Delivery date value: ${car.deliveryDateValue}"));
+
+        if(car.hasLoungeData){
+          widgets.add(Text("Order status: ${car.orderStatus}"));
+          widgets.add(Text("Delivery date type: ${car.deliveryDateType}"));
+          widgets.add(Text("Delivery date value: ${car.deliveryDateValue}"));
+        } else {
+          widgets.add(Text("No lounge data"));
+        }
+
       }
       return widgets;
     }
@@ -133,9 +146,11 @@ class _OverviewPageState extends State<OverviewPage> {
         title: Text("Car overview"),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: contents(),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: contents(),
+          ),
         ),
       ),
       floatingActionButton: actionButton(),

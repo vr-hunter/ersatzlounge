@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'vw_api.dart';
+import 'about.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class OverviewPage extends StatefulWidget {
   const OverviewPage({Key? key, required this.session}) : super(key: key);
@@ -16,11 +18,14 @@ enum Status {
   done
 }
 
+
+
 class _OverviewPageState extends State<OverviewPage> {
   List<VWCar>? cars;
   Status status = Status.loading;
   String errorMessage  = "";
   String statusMessage  = "";
+  String versionString = "";
 
   void loadData() async {
     setState(() {
@@ -39,7 +44,15 @@ class _OverviewPageState extends State<OverviewPage> {
 
     if (cars == null) {
       Navigator.pop(context);
+      return;
+    }else if(cars!.length == 0){
+      setState(() {
+        status = Status.error;
+        errorMessage = "There are no cars registered with this VW ID.";
+      });
+      return;
     }
+
 
     setState(() {
       status = Status.done;
@@ -53,9 +66,24 @@ class _OverviewPageState extends State<OverviewPage> {
 
   }
 
+  Widget aboutWidget = Text("about");
+  setAbout(BuildContext context) async
+  {
+    Widget aw = await about(context);
+    setState(() {
+      aboutWidget = aw;
+    });
+  }
+
   @override
   initState() {
     super.initState();
+    PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+      setState(() {
+        versionString = packageInfo.version;
+      });
+    });
+
     widget.session.statusCallback = statusCallback;
     loadData();
   }
@@ -91,6 +119,7 @@ class _OverviewPageState extends State<OverviewPage> {
         widgets.add(Text(
           car.nickname,
           style: Theme.of(context).textTheme.headline4,
+          textAlign: TextAlign.center,
         ));
         widgets.add(Text("Commissioning ID: ${car.commID}"));
         widgets.add(Text("VIN: ${car.vin}"));
@@ -123,24 +152,7 @@ class _OverviewPageState extends State<OverviewPage> {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final TextStyle textStyle = theme.textTheme.bodyText2!;
-    final List<Widget> aboutBoxChildren = <Widget>[
-      const SizedBox(height: 24),
-      RichText(
-        text: TextSpan(
-          children: <TextSpan>[
-            TextSpan(
-                style: textStyle,
-                text: "Ersatzlounge is a tool that queries the VW relations and lounge API."),
-            TextSpan(
-                style: textStyle.copyWith(color: theme.colorScheme.primary),
-                text: 'https://github.com/vrhunter'),
-            TextSpan(style: textStyle, text: '.'),
-          ],
-        ),
-      ),
-    ];
+    setAbout(context);
     return Scaffold(
       appBar: AppBar(
         title: Text("Car overview"),
@@ -173,15 +185,7 @@ class _OverviewPageState extends State<OverviewPage> {
                 Navigator.pop(context);
               },
             ),
-
-              AboutListTile(
-                icon: const Icon(Icons.info),
-                applicationIcon: const FlutterLogo(),
-                applicationName: 'Ersatzlounge',
-                applicationVersion: '1.0',
-                applicationLegalese: '\u{a9} 2021 vr-hunter',
-                aboutBoxChildren: aboutBoxChildren,
-              ),
+            aboutWidget,
 
 
 

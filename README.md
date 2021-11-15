@@ -1,6 +1,7 @@
 # Ersatzlounge
 
 A flutter app to query to show the production status of ordered vehicles registered to a VW ID. 
+For more information see [USAGE.md](USAGE.md)
 
 ## General
 

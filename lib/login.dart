@@ -3,7 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'overview.dart';
 import 'help.dart';
 import 'vw_api.dart';
-
+import 'about.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -36,15 +36,26 @@ class _LoginPageState extends State<LoginPage> {
 
   }
 
+  Widget aboutWidget = Text("about");
+  setAbout(BuildContext context) async
+  {
+    Widget aw = await about(context);
+    setState(() {
+      aboutWidget = aw;
+    });
+  }
+
   @override
   initState() {
     super.initState();
     getCredentials();
   }
 
+
+
   @override
   Widget build(BuildContext context) {
-
+    setAbout(context);
     return Scaffold(
       appBar: AppBar(
         title: Text("Log In"),
@@ -104,9 +115,27 @@ class _LoginPageState extends State<LoginPage> {
               child: Text("What is this?")
               ),
             ),
+
           ],
         ),
-      )
+      ),
+      drawer: Drawer(
+        child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              const DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                ),
+                child: Text('Ersatzlounge'),
+              ),
+              aboutWidget,
+
+
+
+            ]
+        ),
+      ),
     );
   }
 }

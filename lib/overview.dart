@@ -45,7 +45,15 @@ class _OverviewPageState extends State<OverviewPage> {
 
     if (cars == null) {
       Navigator.pop(context);
+      return;
+    }else if(cars!.length == 0){
+      setState(() {
+        status = Status.error;
+        errorMessage = "There are no cars registered with this VW ID.";
+      });
+      return;
     }
+
 
     setState(() {
       status = Status.done;

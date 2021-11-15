@@ -1,5 +1,8 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'vw_api.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class OverviewPage extends StatefulWidget {
   const OverviewPage({Key? key, required this.session}) : super(key: key);
@@ -16,11 +19,14 @@ enum Status {
   done
 }
 
+
+
 class _OverviewPageState extends State<OverviewPage> {
   List<VWCar>? cars;
   Status status = Status.loading;
   String errorMessage  = "";
   String statusMessage  = "";
+  String versionString = "";
 
   void loadData() async {
     setState(() {
@@ -56,6 +62,12 @@ class _OverviewPageState extends State<OverviewPage> {
   @override
   initState() {
     super.initState();
+    PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+      setState(() {
+        versionString = packageInfo.version;
+      });
+    });
+
     widget.session.statusCallback = statusCallback;
     loadData();
   }
@@ -133,10 +145,14 @@ class _OverviewPageState extends State<OverviewPage> {
           children: <TextSpan>[
             TextSpan(
                 style: textStyle,
-                text: "Ersatzlounge is a tool that queries the VW relations and lounge API."),
+                text: "Ersatzlounge is a tool that queries the VW relations and lounge API. This app is open source under the \"3-Clause\" BSD Licence, check out the source code at:\n"),
             TextSpan(
                 style: textStyle.copyWith(color: theme.colorScheme.primary),
-                text: 'https://github.com/vrhunter'),
+                text: 'https://github.com/vr-hunter/ersatzlounge',
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () { launch('https://github.com/vr-hunter/ersatzlounge');
+                  },
+            ),
             TextSpan(style: textStyle, text: '.'),
           ],
         ),
@@ -179,7 +195,7 @@ class _OverviewPageState extends State<OverviewPage> {
                 icon: const Icon(Icons.info),
                 applicationIcon: const FlutterLogo(),
                 applicationName: 'Ersatzlounge',
-                applicationVersion: '1.0',
+                applicationVersion: versionString,
                 applicationLegalese: '\u{a9} 2021 vr-hunter',
                 aboutBoxChildren: aboutBoxChildren,
               ),

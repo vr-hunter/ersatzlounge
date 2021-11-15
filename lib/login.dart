@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'overview.dart';
+import 'help.dart';
 import 'vw_api.dart';
 
 
@@ -91,6 +92,16 @@ class _LoginPageState extends State<LoginPage> {
                   'Login',
                   style: TextStyle(color: Colors.white, fontSize: 25),
                 ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(0,40,0,0),
+              child: TextButton(
+              onPressed: () {
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (_) => HelpPage()));
+              },
+              child: Text("What is this?")
               ),
             ),
           ],

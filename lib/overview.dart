@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+
 import 'vw_api.dart';
 import 'about.dart';
-import 'package:package_info_plus/package_info_plus.dart';
+import 'help.dart';
+
 
 class OverviewPage extends StatefulWidget {
   const OverviewPage({Key? key, required this.session}) : super(key: key);
@@ -187,6 +190,14 @@ class _OverviewPageState extends State<OverviewPage> {
               onTap: () {
                 Navigator.pop(context);
                 Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: const Text('Help'),
+              leading: const Icon(Icons.help),
+              onTap: () {
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (_) => HelpPage()));
               },
             ),
             aboutWidget,

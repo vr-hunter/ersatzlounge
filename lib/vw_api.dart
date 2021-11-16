@@ -341,8 +341,15 @@ class VWConnector {
 
     _cars = [];
 
+    List<String> nicknames = [];
+
     for( var relationsRecord in relationsData ){
       String nickname = relationsRecord['vehicleNickname'];
+
+      if(nicknames.contains(nickname)){
+        throw APIException("Two or more vehicles registered to this VW ID have the same name. Please make sure that vehicle names are unique.");
+      }
+      nicknames.add(nickname);
 
       // find a lounge record with the same nickname
       Map? loungeRecord;

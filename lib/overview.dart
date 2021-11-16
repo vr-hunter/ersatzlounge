@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+
 import 'vw_api.dart';
 import 'about.dart';
-import 'package:package_info_plus/package_info_plus.dart';
+import 'help.dart';
+
 
 class OverviewPage extends StatefulWidget {
   const OverviewPage({Key? key, required this.session}) : super(key: key);
@@ -103,7 +106,11 @@ class _OverviewPageState extends State<OverviewPage> {
           ":'(",
           style: Theme.of(context).textTheme.headline4,
         ),
-        Text(errorMessage)
+        Padding(
+            padding: EdgeInsets.all(20),
+            child: Text(errorMessage),
+        )
+
       ];
     }
     else if(status == Status.done){
@@ -121,7 +128,7 @@ class _OverviewPageState extends State<OverviewPage> {
           style: Theme.of(context).textTheme.headline4,
           textAlign: TextAlign.center,
         ));
-        widgets.add(Text("Commissioning ID: ${car.commID}"));
+        widgets.add(Text("Commission ID: ${car.commID}"));
         widgets.add(Text("VIN: ${car.vin}"));
 
         if(car.hasLoungeData){
@@ -183,6 +190,14 @@ class _OverviewPageState extends State<OverviewPage> {
               onTap: () {
                 Navigator.pop(context);
                 Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: const Text('Help'),
+              leading: const Icon(Icons.help),
+              onTap: () {
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (_) => HelpPage()));
               },
             ),
             aboutWidget,

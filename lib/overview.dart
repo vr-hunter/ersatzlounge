@@ -103,7 +103,11 @@ class _OverviewPageState extends State<OverviewPage> {
           ":'(",
           style: Theme.of(context).textTheme.headline4,
         ),
-        Text(errorMessage)
+        Padding(
+            padding: EdgeInsets.all(20),
+            child: Text(errorMessage),
+        )
+
       ];
     }
     else if(status == Status.done){

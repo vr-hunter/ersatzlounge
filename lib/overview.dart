@@ -121,7 +121,7 @@ class _OverviewPageState extends State<OverviewPage> {
           style: Theme.of(context).textTheme.headline4,
           textAlign: TextAlign.center,
         ));
-        widgets.add(Text("Commissioning ID: ${car.commID}"));
+        widgets.add(Text("Commission ID: ${car.commID}"));
         widgets.add(Text("VIN: ${car.vin}"));
 
         if(car.hasLoungeData){

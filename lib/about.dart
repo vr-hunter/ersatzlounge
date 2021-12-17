@@ -36,7 +36,7 @@ Future<Widget> about(BuildContext context) async
 
   return AboutListTile(
     icon: const Icon(Icons.info),
-    applicationIcon: const FlutterLogo(),
+    applicationIcon: Image.asset('assets/icons/android.png', width: 100, height: 100,),
     applicationName: 'Ersatzlounge',
     applicationVersion: versionString,
     applicationLegalese: '\u{a9} 2021 vr-hunter',

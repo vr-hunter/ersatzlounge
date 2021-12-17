@@ -251,6 +251,11 @@ class VWConnector {
       throw ConnectionException("Incorrect password. Please use a valid VW ID.");
     }
 
+    String? epf_action = p.getElementById("emailPasswordForm")?.attributes["action"];
+    if(epf_action != null && epf_action.contains("terms-and-conditions")){
+      throw ConnectionException("Please log in to your VW account using the website. There may be new terms and conditions to accept before you can continue using this app.");
+    }
+
     loggedIn = true;
     return loggedIn;
   }

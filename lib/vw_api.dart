@@ -225,10 +225,28 @@ class VWConnector {
       throw ConnectionException("Couldn't get login page 2");
     }
     p = parse(data.data);
-    csrf = p.getElementById("csrf")?.attributes["value"];
-    relay_state = p.getElementById("input_relayState")?.attributes["value"];
-    hmac = p.getElementById("hmac")?.attributes["value"];
-    url = p.getElementById("credentialsForm")?.attributes["action"];
+    String clientID = "";
+    var scripts = p.getElementsByTagName("script");
+    for (var script in scripts){
+      if(script.text.contains("_IDK")){
+        var parsed = script.text.substring(script.text.indexOf("templateModel:")+15);
+        parsed = parsed.substring(0, parsed.indexOf("\n")-1);
+        Map decoded = json.decode(parsed);
+        relay_state = decoded["relayState"];
+        hmac = decoded["hmac"];
+        url = decoded["postAction"];
+        clientID = decoded["clientLegalEntityModel"]["clientId"];
+        parsed = script.text.substring(script.text.indexOf("csrf_token:")+13);
+        parsed = parsed.substring(0, parsed.indexOf("\n")-1);
+        csrf = parsed;
+        break;
+      }
+    }
+
+    //csrf = p.getElementById("csrf")?.attributes["value"];
+    //relay_state = p.getElementById("input_relayState")?.attributes["value"];
+    //hmac = p.getElementById("hmac")?.attributes["value"];
+    //url = p.getElementById("credentialsForm")?.attributes["action"];
 
     if(csrf == null || relay_state == null  || hmac == null || url == null) {
       if(p.getElementById("emailPasswordForm") != null){
@@ -241,7 +259,7 @@ class VWConnector {
 
     // Enter password
     params = {"_csrf": csrf, "relayState": relay_state, "hmac": hmac, "email": vwIdEmail, "password": vwIdPassword};
-    data = await redirectingPOST("$VW_IDENTITY_HOST$url", data: FormData.fromMap(params));
+    data = await redirectingPOST("$VW_IDENTITY_HOST/signin-service/v1/$clientID/$url", data: FormData.fromMap(params));
     p = parse(data.data);
     if((data.statusCode ?? 999) >= 400) {
       throw ConnectionException("Couldn't get login page 2");

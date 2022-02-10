@@ -75,7 +75,7 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: build/app/outputs/bundle/release/app-release.aab
-          asset_name: app_bundle
+          asset_name: ersatzlounge.aab
           tag: ${{ github.ref }}
           overwrite: true
           body: "App bundle ${{ github.event.release.tag_name }}+$BUILD_NUMBER"
@@ -85,7 +85,7 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: build/app/outputs/flutter-apk/app-release.apk
-          asset_name: APK
+          asset_name: ersatzlounge.apk
           tag: ${{ github.ref }}
           overwrite: true
           body: "APK ${{ github.event.release.tag_name }}+$BUILD_NUMBER"

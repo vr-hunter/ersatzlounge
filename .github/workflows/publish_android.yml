@@ -66,6 +66,9 @@ jobs:
 
       - name: Build Android App Bundle
         run: flutter build appbundle --build-name ${{ github.event.release.tag_name }} --build-number $BUILD_NUMBER
+        
+      - name: Build Android APK
+        run: flutter build apk --build-name ${{ github.event.release.tag_name }} --build-number $BUILD_NUMBER
 
       - name: Upload app bundle to release
         uses: svenstaro/upload-release-action@v2
@@ -76,6 +79,17 @@ jobs:
           tag: ${{ github.ref }}
           overwrite: true
           body: "App bundle ${{ github.event.release.tag_name }}+$BUILD_NUMBER"
+    
+      - name: Upload APK to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/app/outputs/bundle/release/app-release.apk
+          asset_name: APK
+          tag: ${{ github.ref }}
+          overwrite: true
+          body: "APK ${{ github.event.release.tag_name }}+$BUILD_NUMBER"
+
 
       - name: Create Gemfile
         run: |
